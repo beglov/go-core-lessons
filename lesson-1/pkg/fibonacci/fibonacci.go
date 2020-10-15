@@ -2,6 +2,7 @@ package fibonacci
 
 import "log"
 
+// Fibonacci возвращает число Фибоначчи по его порядковому номеру
 func Fibonacci(i int) int {
 	if i > 20 {
 		log.Fatal("число не может быть больше 20")
