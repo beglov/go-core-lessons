@@ -1,16 +1,10 @@
 package fibonacci
 
-import "log"
-
-// Fibonacci возвращает число Фибоначчи по его порядковому номеру
-func Fibonacci(i int) int {
-	if i > 20 {
-		log.Fatal("число не может быть больше 20")
-	}
-
+// Num возвращает число Фибоначчи по его порядковому номеру
+func Num(i int) int {
 	if i == 1 || i == 2 {
 		return 1
 	}
 
-	return Fibonacci(i-1) + Fibonacci(i-2)
+	return Num(i-1) + Num(i-2)
 }

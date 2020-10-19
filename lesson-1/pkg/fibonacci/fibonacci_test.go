@@ -4,8 +4,8 @@ import (
 	"testing"
 )
 
-func Test_Fibonacci(t *testing.T) {
-	got := Fibonacci(8)
+func Test_Num(t *testing.T) {
+	got := Num(8)
 	want := 21
 
 	if got != want {
