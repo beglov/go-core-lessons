@@ -25,6 +25,7 @@ func main() {
 		data, err := spider.Scan(url, 2)
 		if err != nil {
 			log.Printf("ошибка при сканировании сайта %s: %v\n", url, err)
+			continue
 		}
 		for k, v := range data {
 			totalData[k] = v
@@ -33,16 +34,17 @@ func main() {
 
 	if *sFlag != "" {
 		search(totalData, *sFlag)
-	} else {
-		var word string
-		for {
-			fmt.Print("Введите слово для поиска или exit для выхода: ")
-			fmt.Scan(&word)
-			if word == "exit" {
-				break
-			}
-			search(totalData, word)
+		return
+	}
+
+	var word string
+	for {
+		fmt.Print("Введите слово для поиска или exit для выхода: ")
+		fmt.Scanln(&word)
+		if word == "exit" {
+			break
 		}
+		search(totalData, word)
 	}
 }
 
