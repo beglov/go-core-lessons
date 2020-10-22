@@ -9,6 +9,17 @@ import (
 	"go-core-lessons/lesson-2/pkg/spider"
 )
 
+type Scanner interface {
+	Scan(string, int) (map[string]string, error)
+}
+
+type scanner struct{}
+
+func (c *scanner) Scan(url string, depth int) (map[string]string, error) {
+	data, err := spider.Scan(url, depth)
+	return data, err
+}
+
 func main() {
 	var sFlag = flag.String("s", "", "слово для поиска")
 	flag.Parse()
@@ -22,7 +33,8 @@ func main() {
 
 	totalData := make(map[string]string)
 	for _, url := range urls {
-		data, err := spider.Scan(url, 2)
+		var s scanner
+		data, err := scanning(&s, url, 2)
 		if err != nil {
 			log.Printf("ошибка при сканировании сайта %s: %v\n", url, err)
 			continue
@@ -46,6 +58,10 @@ func main() {
 		}
 		search(totalData, word)
 	}
+}
+
+func scanning(s Scanner, url string, depth int) (map[string]string, error) {
+	return s.Scan(url, depth)
 }
 
 func search(data map[string]string, word string) {
