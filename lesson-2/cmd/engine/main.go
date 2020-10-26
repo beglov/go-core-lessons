@@ -15,7 +15,7 @@ type Scanner interface {
 
 type scanner struct{}
 
-func (c *scanner) Scan(url string, depth int) (map[string]string, error) {
+func (s *scanner) Scan(url string, depth int) (map[string]string, error) {
 	data, err := spider.Scan(url, depth)
 	return data, err
 }
@@ -33,8 +33,8 @@ func main() {
 
 	totalData := make(map[string]string)
 	for _, url := range urls {
-		var s scanner
-		data, err := scanning(&s, url, 2)
+		s := new(scanner)
+		data, err := scan(s, url, 2)
 		if err != nil {
 			log.Printf("ошибка при сканировании сайта %s: %v\n", url, err)
 			continue
@@ -60,7 +60,7 @@ func main() {
 	}
 }
 
-func scanning(s Scanner, url string, depth int) (map[string]string, error) {
+func scan(s Scanner, url string, depth int) (map[string]string, error) {
 	return s.Scan(url, depth)
 }
 

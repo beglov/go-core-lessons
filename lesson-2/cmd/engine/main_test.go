@@ -15,7 +15,7 @@ func (c *testScanner) Scan(url string, depth int) (map[string]string, error) {
 
 func Test_scanning(t *testing.T) {
 	var s testScanner
-	got, _ := scanning(&s, "https://go.dev", 2)
+	got, _ := scan(&s, "https://go.dev", 2)
 	want := make(map[string]string)
 	want["https://go.dev/learn"] = "Getting Started - go.dev"
 	if !reflect.DeepEqual(got, want) {
