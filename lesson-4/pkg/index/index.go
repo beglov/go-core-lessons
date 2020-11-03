@@ -9,17 +9,20 @@ type Service struct {
 	index map[string][]int
 }
 
-func New(documents []spider.Document) *Service {
+func New() *Service {
 	s := Service{
 		index: make(map[string][]int),
 	}
+	return &s
+}
+
+func (s *Service) Add(documents []spider.Document) {
 	for _, document := range documents {
 		words := strings.Split(document.Title, " ")
 		for _, word := range words {
 			s.index[word] = append(s.index[word], document.ID)
 		}
 	}
-	return &s
 }
 
 func (s *Service) Search(word string) []int {

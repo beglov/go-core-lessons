@@ -28,13 +28,17 @@ func main() {
 	s := spider.New()
 	documents := scan(s, urls, 2)
 
-	idx := index.New(documents)
+	idx := index.New()
+	idx.Add(documents)
 
 	fmt.Println(documents)
 	fmt.Println(idx)
 
 	if *sFlag != "" {
-		search(documents, idx, *sFlag)
+		results := search(documents, idx, *sFlag)
+		for _, v := range results {
+			fmt.Printf("%s - %s\n", v.URL, v.Title)
+		}
 		return
 	}
 
@@ -45,7 +49,10 @@ func main() {
 		if word == "exit" {
 			break
 		}
-		search(documents, idx, word)
+		results := search(documents, idx, word)
+		for _, v := range results {
+			fmt.Printf("%s - %s\n", v.URL, v.Title)
+		}
 	}
 }
 
@@ -68,16 +75,17 @@ func scan(s Scanner, urls []string, depth int) []spider.Document {
 	return documents
 }
 
-func search(data []spider.Document, idx *index.Service, word string) {
+func search(data []spider.Document, idx *index.Service, word string) (results []spider.Document) {
 	ids := idx.Search(word)
 	for _, id := range ids {
-		if v := binary(data, id); v != -1 {
-			fmt.Printf("%s - %s\n", data[v].URL, data[v].Title)
+		if v := binarySearch(data, id); v != -1 {
+			results = append(results, data[v])
 		}
 	}
+	return results
 }
 
-func binary(data []spider.Document, item int) int {
+func binarySearch(data []spider.Document, item int) int {
 	low, high := 0, len(data)-1
 	for low <= high {
 		mid := (low + high) / 2
