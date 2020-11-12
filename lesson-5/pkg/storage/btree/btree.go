@@ -1,7 +1,6 @@
 package btree
 
 import (
-	"fmt"
 	"gosearch/pkg/crawler"
 	"sync"
 )
@@ -78,6 +77,7 @@ func insert(node, new *Element) {
 func (t *Tree) Search(x int) crawler.Document {
 	return search(t.root, x)
 }
+
 func search(el *Element, x int) crawler.Document {
 	if el == nil {
 		return el.Value
@@ -89,26 +89,4 @@ func search(el *Element, x int) crawler.Document {
 		return search(el.right, x)
 	}
 	return search(el.left, x)
-}
-
-// String - реализуем интерфейс Stringer для функций печати пакета fmt
-func (t Tree) String() string {
-	return prettyPrint(t.root, 0)
-}
-
-// prettyPrint печатает дерево в виде дерева :)
-func prettyPrint(e *Element, spaces int) (res string) {
-	if e == nil {
-		return res
-	}
-
-	spaces++
-	res += prettyPrint(e.right, spaces)
-	for i := 0; i < spaces; i++ {
-		res += fmt.Sprint("\t")
-	}
-	res += fmt.Sprintf("%d\n", e.Value.ID)
-	res += prettyPrint(e.left, spaces)
-
-	return res
 }
