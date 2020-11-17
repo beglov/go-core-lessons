@@ -44,33 +44,36 @@ func new() *gosearch {
 // init производит инициализацию
 func (gs *gosearch) init() {
 	if _, err := os.Stat("prev_search_documents.txt"); err == nil {
-		gs.restore()
+		err := gs.restore()
+		if err != nil {
+			log.Println("не удалось восстановить результаты предыдущего сканирования", err)
+		}
 	}
 	go gs.scan()
 }
 
-func (gs *gosearch) restore() {
+func (gs *gosearch) restore() error {
 	log.Println("Восстановление результатов предыдущего сканирования...")
 
 	bytes, err := ioutil.ReadFile("prev_search_documents.txt")
 	if err != nil {
-		log.Println("ошибка при чтении предыдущих результатов поиска:", err)
-		return
+		return err
 	}
 
 	var documents []crawler.Document
 	err = json.Unmarshal(bytes, &documents)
 	if err != nil {
-		log.Println("ошибка при десериализации предыдущих результатов поиска:", err)
-		return
+		return err
 	}
 
 	err = gs.engine.Add(documents)
 	if err != nil {
-		log.Println("ошибка при добавлении документов:", err)
+		return err
 	}
 
 	log.Println("Восстановление завершено")
+
+	return nil
 }
 
 // scan производит сканирование сайтов и индексирование данных.
@@ -95,20 +98,22 @@ func (gs *gosearch) scan() {
 		log.Println("ошибка при добавлении документов:", err)
 	}
 
-	gs.dump(documents)
+	err = gs.dump(documents)
+	if err != nil {
+		log.Println("не удалось сохранить результаты сканирования", err)
+	}
 }
 
-func (gs *gosearch) dump(documents []crawler.Document) {
+func (gs *gosearch) dump(documents []crawler.Document) error {
 	bytes, err := json.Marshal(documents)
 	if err != nil {
-		log.Println("ошибка при сериализации результатов поиска:", err)
-		return
+		return err
 	}
 	err = ioutil.WriteFile("prev_search_documents.txt", bytes, 0644)
 	if err != nil {
-		log.Println("ошибка при сериализации результатов поиска:", err)
-		return
+		return err
 	}
+	return nil
 }
 
 func (gs *gosearch) run() {
