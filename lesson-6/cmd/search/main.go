@@ -45,11 +45,15 @@ func new() *gosearch {
 func (gs *gosearch) init() {
 	if _, err := os.Stat("prev_search_documents.txt"); err == nil {
 		err := gs.restore()
-		if err != nil {
+		if err == nil {
+			go gs.scan()
+		} else {
 			log.Println("не удалось восстановить результаты предыдущего сканирования", err)
+			gs.scan()
 		}
+	} else {
+		gs.scan()
 	}
-	go gs.scan()
 }
 
 func (gs *gosearch) restore() error {
