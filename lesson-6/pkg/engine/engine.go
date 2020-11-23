@@ -12,6 +12,8 @@ import (
 // - обработка поискового запроса;
 // - поиск документов в индексе;
 // - запрос документов из хранилища;
+// - добавление документов в хранилище и индекс;
+// - очистка хранилища и индекса;
 // - возврат посиковой выдачи.
 
 // Service - поисковый движок.
@@ -49,8 +51,5 @@ func (s *Service) Clear() {
 func (s *Service) Add(docs []crawler.Document) error {
 	s.index.Add(docs)
 	err := s.storage.StoreDocs(docs)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }

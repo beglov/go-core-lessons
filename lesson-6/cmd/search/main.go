@@ -45,20 +45,18 @@ func new() *gosearch {
 func (gs *gosearch) init() {
 	if _, err := os.Stat("prev_search_documents.txt"); err == nil {
 		err := gs.restore()
-		if err == nil {
-			go gs.scan()
-		} else {
+		if err != nil {
 			log.Println("не удалось восстановить результаты предыдущего сканирования", err)
 			gs.scan()
+			return
 		}
+		go gs.scan()
 	} else {
 		gs.scan()
 	}
 }
 
 func (gs *gosearch) restore() error {
-	log.Println("Восстановление результатов предыдущего сканирования...")
-
 	bytes, err := ioutil.ReadFile("prev_search_documents.txt")
 	if err != nil {
 		return err
@@ -71,13 +69,7 @@ func (gs *gosearch) restore() error {
 	}
 
 	err = gs.engine.Add(documents)
-	if err != nil {
-		return err
-	}
-
-	log.Println("Восстановление завершено")
-
-	return nil
+	return err
 }
 
 // scan производит сканирование сайтов и индексирование данных.
@@ -114,10 +106,7 @@ func (gs *gosearch) dump(documents []crawler.Document) error {
 		return err
 	}
 	err = ioutil.WriteFile("prev_search_documents.txt", bytes, 0644)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (gs *gosearch) run() {
