@@ -1,9 +1,9 @@
 package engine
 
 import (
-	"gosearch/pkg/crawler"
-	"gosearch/pkg/index"
-	"gosearch/pkg/storage"
+	"go-core-lessons/lesson-7/pkg/crawler"
+	"go-core-lessons/lesson-7/pkg/index"
+	"go-core-lessons/lesson-7/pkg/storage"
 )
 
 // Engine - поисковый движок.

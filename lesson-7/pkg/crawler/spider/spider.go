@@ -8,7 +8,7 @@ import (
 
 	"golang.org/x/net/html"
 
-	"gosearch/pkg/crawler"
+	"go-core-lessons/lesson-7/pkg/crawler"
 )
 
 // Service - служба поискового робота.

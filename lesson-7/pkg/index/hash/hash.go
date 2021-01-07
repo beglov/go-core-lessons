@@ -1,7 +1,7 @@
 package hash
 
 import (
-	"gosearch/pkg/crawler"
+	"go-core-lessons/lesson-7/pkg/crawler"
 	"strings"
 )
 

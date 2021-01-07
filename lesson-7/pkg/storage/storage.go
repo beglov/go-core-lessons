@@ -3,7 +3,7 @@ package storage
 // Хранилище отсканированных документов.
 
 import (
-	"gosearch/pkg/crawler"
+	"go-core-lessons/lesson-7/pkg/crawler"
 )
 
 // Interface определяет контракт хранилища данных.

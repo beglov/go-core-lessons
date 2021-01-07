@@ -9,11 +9,11 @@ import (
 	"os"
 	"strings"
 
-	"gosearch/pkg/crawler"
-	"gosearch/pkg/crawler/spider"
-	"gosearch/pkg/engine"
-	"gosearch/pkg/index/hash"
-	"gosearch/pkg/storage/btree"
+	"go-core-lessons/lesson-7/pkg/crawler"
+	"go-core-lessons/lesson-7/pkg/crawler/spider"
+	"go-core-lessons/lesson-7/pkg/engine"
+	"go-core-lessons/lesson-7/pkg/index/hash"
+	"go-core-lessons/lesson-7/pkg/storage/btree"
 )
 
 type gosearch struct {
