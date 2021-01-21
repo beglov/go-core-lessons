@@ -1,6 +1,8 @@
 package memstore
 
 import (
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"go-core-lessons/lesson-10/gosearch/pkg/crawler"
 	"sort"
 	"sync"
@@ -11,6 +13,11 @@ type DB struct {
 	mux  *sync.Mutex
 	docs []crawler.Document
 }
+
+var storageDocsTotal = promauto.NewCounter(prometheus.CounterOpts{
+	Name: "storage_docs_total",
+	Help: "Количества документов в хранилище.",
+})
 
 // New - конструктор.
 func New() *DB {
@@ -23,6 +30,7 @@ func New() *DB {
 // StoreDocs обавляет новые документы.
 func (db *DB) StoreDocs(docs []crawler.Document) error {
 	db.docs = append(db.docs, docs...)
+	storageDocsTotal.Add(float64(len(docs)))
 	sort.Slice(db.docs, func(i, j int) bool { return db.docs[i].ID > db.docs[j].ID })
 	return nil
 }

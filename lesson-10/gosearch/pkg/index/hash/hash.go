@@ -1,6 +1,8 @@
 package hash
 
 import (
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"go-core-lessons/lesson-10/gosearch/pkg/crawler"
 	"strings"
 )
@@ -9,6 +11,11 @@ import (
 type Index struct {
 	data map[string][]int
 }
+
+var indexLen = promauto.NewGauge(prometheus.GaugeOpts{
+	Name: "index_len",
+	Help: "Длинна индекса",
+})
 
 // New - конструктор.
 func New() *Index {
@@ -30,6 +37,7 @@ func (index *Index) Add(docs []crawler.Document) {
 			}
 		}
 	}
+	indexLen.Set(float64(len(index.data)))
 }
 
 // Search возвращает номера документов, где встречается данная лексема.

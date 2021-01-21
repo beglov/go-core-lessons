@@ -1,6 +1,8 @@
 package engine
 
 import (
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"go-core-lessons/lesson-10/gosearch/pkg/crawler"
 	"go-core-lessons/lesson-10/gosearch/pkg/index"
 	"go-core-lessons/lesson-10/gosearch/pkg/storage"
@@ -20,6 +22,12 @@ type Service struct {
 	storage storage.Interface
 }
 
+var queryLen = promauto.NewHistogram(prometheus.HistogramOpts{
+	Name:    "query_len",
+	Help:    "Длина поискового запроса, байт.",
+	Buckets: prometheus.LinearBuckets(5, 5, 40),
+})
+
 // New - конструктор.
 func New(index index.Interface, storage storage.Interface) *Service {
 	s := Service{
@@ -36,5 +44,6 @@ func (s *Service) Search(query string) []crawler.Document {
 	}
 	ids := s.index.Search(query)
 	docs := s.storage.Docs(ids)
+	queryLen.Observe(float64(len(query)))
 	return docs
 }
