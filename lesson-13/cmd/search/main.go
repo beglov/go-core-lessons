@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"sync"
 
 	"go-core-lessons/lesson-13/pkg/crawler"
 	"go-core-lessons/lesson-13/pkg/crawler/spider"
@@ -73,19 +74,33 @@ func (gs *gosearch) restore() error {
 
 // scan производит сканирование сайтов и индексирование данных.
 func (gs *gosearch) scan() {
-	id := 0
 	var documents []crawler.Document
-	for _, url := range gs.sites {
-		data, err := gs.scanner.Scan(url, gs.depth)
-		if err != nil {
-			continue
+
+	log.Println("сканирование сайтов")
+	var wg sync.WaitGroup // создаем WaitGroup для ожидания завершения сканирования сайтов
+	wg.Add(2)
+
+	chDocs, chErr := gs.scanner.BatchScan(gs.sites, 2, 10)
+
+	go func() {
+		defer wg.Done()
+		for err := range chErr {
+			log.Println("ошибка при сканировании сайта:", err)
 		}
-		for i := range data {
-			data[i].ID = id
+	}()
+
+	go func() {
+		defer wg.Done()
+		id := 0
+		for doc := range chDocs {
+			doc.ID = id
 			id++
+			documents = append(documents, doc)
 		}
-		documents = append(documents, data...)
-	}
+	}()
+
+	wg.Wait()
+	log.Println("сканирование сайтов завершено")
 
 	gs.engine.Clear()
 	err := gs.engine.Add(documents)
@@ -95,7 +110,7 @@ func (gs *gosearch) scan() {
 
 	err = gs.dump(documents)
 	if err != nil {
-		log.Println("не удалось сохранить результаты сканирования", err)
+		log.Println("не удалось создать дамп результатов сканирования", err)
 	}
 }
 
