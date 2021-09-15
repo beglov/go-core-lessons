@@ -7,27 +7,27 @@ import (
 
 // Tree - Двоичное дерево поиска
 type Tree struct {
-	mux  *sync.Mutex
-	root *Element
+	Mux  *sync.Mutex
+	Root *Element
 }
 
 // Element - элемент дерева
 type Element struct {
-	left, right *Element
+	Left, Right *Element
 	Value       crawler.Document
 }
 
 // New - конструктор.
 func New() *Tree {
 	db := Tree{
-		mux: new(sync.Mutex),
+		Mux: new(sync.Mutex),
 	}
 	return &db
 }
 
 // Clear очищает хранилище
 func (t *Tree) Clear() {
-	t.root = nil
+	t.Root = nil
 }
 
 // StoreDocs добавляет новые документы.
@@ -41,8 +41,8 @@ func (t *Tree) StoreDocs(docs []crawler.Document) error {
 // Docs возвращает документы по их номерам.
 func (t *Tree) Docs(ids []int) []crawler.Document {
 	var result []crawler.Document
-	t.mux.Lock()
-	defer t.mux.Unlock()
+	t.Mux.Lock()
+	defer t.Mux.Unlock()
 	for _, id := range ids {
 		s := t.Search(id)
 		result = append(result, s)
@@ -53,34 +53,34 @@ func (t *Tree) Docs(ids []int) []crawler.Document {
 // Insert - вставка элемента в дерево
 func (t *Tree) Insert(doc crawler.Document) {
 	e := &Element{Value: doc}
-	if t.root == nil {
-		t.root = e
+	if t.Root == nil {
+		t.Root = e
 		return
 	}
-	insert(t.root, e)
+	insert(t.Root, e)
 }
 
 // inset рекурсивно вставляет элемент в нужный уровень дерева.
 func insert(node, new *Element) {
 	if new.Value.ID < node.Value.ID {
-		if node.left == nil {
-			node.left = new
+		if node.Left == nil {
+			node.Left = new
 			return
 		}
-		insert(node.left, new)
+		insert(node.Left, new)
 	}
 	if new.Value.ID >= node.Value.ID {
-		if node.right == nil {
-			node.right = new
+		if node.Right == nil {
+			node.Right = new
 			return
 		}
-		insert(node.right, new)
+		insert(node.Right, new)
 	}
 }
 
 // Search - поиск значения в дереве, выдаёт документ если найдено, иначе nil
 func (t *Tree) Search(x int) crawler.Document {
-	return search(t.root, x)
+	return search(t.Root, x)
 }
 
 func search(el *Element, x int) crawler.Document {
@@ -91,7 +91,7 @@ func search(el *Element, x int) crawler.Document {
 		return el.Value
 	}
 	if el.Value.ID < x {
-		return search(el.right, x)
+		return search(el.Right, x)
 	}
-	return search(el.left, x)
+	return search(el.Left, x)
 }

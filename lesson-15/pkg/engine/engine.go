@@ -18,15 +18,15 @@ import (
 
 // Service - поисковый движок.
 type Service struct {
-	index   index.Interface
-	storage storage.Interface
+	Index   index.Interface
+	Storage storage.Interface
 }
 
 // New - конструктор.
 func New(index index.Interface, storage storage.Interface) *Service {
 	s := Service{
-		index:   index,
-		storage: storage,
+		Index:   index,
+		Storage: storage,
 	}
 	return &s
 }
@@ -36,20 +36,20 @@ func (s *Service) Search(query string) []crawler.Document {
 	if query == "" {
 		return nil
 	}
-	ids := s.index.Search(query)
-	docs := s.storage.Docs(ids)
+	ids := s.Index.Search(query)
+	docs := s.Storage.Docs(ids)
 	return docs
 }
 
 // Clear очищает индекс и хранилище
 func (s *Service) Clear() {
-	s.index.Clear()
-	s.storage.Clear()
+	s.Index.Clear()
+	s.Storage.Clear()
 }
 
 // Add добавляет документы в хранилице и индексирует их
 func (s *Service) Add(docs []crawler.Document) error {
-	s.index.Add(docs)
-	err := s.storage.StoreDocs(docs)
+	s.Index.Add(docs)
+	err := s.Storage.StoreDocs(docs)
 	return err
 }

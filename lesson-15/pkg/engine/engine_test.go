@@ -59,8 +59,8 @@ func TestService_Search(t *testing.T) {
 
 func TestService_Clear(t *testing.T) {
 	engine.Clear()
-	if engine.index.Search("Google") != nil {
-		t.Errorf("получили %v, ожидалось %v", engine.index.Search("Google"), nil)
+	if engine.Index.Search("Google") != nil {
+		t.Errorf("получили %v, ожидалось %v", engine.Index.Search("Google"), nil)
 	}
 }
 

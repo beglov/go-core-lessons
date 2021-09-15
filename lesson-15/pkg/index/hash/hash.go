@@ -7,13 +7,13 @@ import (
 
 // Index - индекс на основе хэш-таблицы.
 type Index struct {
-	data map[string][]int
+	Data map[string][]int
 }
 
 // New - конструктор.
 func New() *Index {
 	var ind Index
-	ind.data = make(map[string][]int)
+	ind.Data = make(map[string][]int)
 	return &ind
 }
 
@@ -25,8 +25,8 @@ func New() *Index {
 func (index *Index) Add(docs []crawler.Document) {
 	for _, doc := range docs {
 		for _, token := range tokens(doc.Title) {
-			if !exists(index.data[token], doc.ID) {
-				index.data[token] = append(index.data[token], doc.ID)
+			if !exists(index.Data[token], doc.ID) {
+				index.Data[token] = append(index.Data[token], doc.ID)
 			}
 		}
 	}
@@ -34,12 +34,12 @@ func (index *Index) Add(docs []crawler.Document) {
 
 // Search возвращает номера документов, где встречается данная лексема.
 func (index *Index) Search(token string) []int {
-	return index.data[strings.ToLower(token)]
+	return index.Data[strings.ToLower(token)]
 }
 
 // Clear очищает индекс
 func (index *Index) Clear() {
-	index.data = make(map[string][]int)
+	index.Data = make(map[string][]int)
 }
 
 // Разделение строки на лексемы.

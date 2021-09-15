@@ -38,7 +38,7 @@ func TestIndex_Add(t *testing.T) {
 		},
 	}
 	ind2.Add(docs)
-	got := len(ind2.data)
+	got := len(ind2.Data)
 	want := 3
 	if got != want {
 		t.Fatalf("получили %d, ожидалось %d", got, want)
@@ -84,7 +84,7 @@ func TestIndex_Search(t *testing.T) {
 
 func TestIndex_Clear(t *testing.T) {
 	ind.Clear()
-	got := len(ind.data)
+	got := len(ind.Data)
 	want := 0
 	if got != want {
 		t.Fatalf("получили %d, ожидалось %d", got, want)
