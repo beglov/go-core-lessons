@@ -1,13 +1,11 @@
 package main
 
 import (
-	"bufio"
 	"encoding/json"
-	"fmt"
+	"go-core-lessons/lesson-16/pkg/api"
 	"io/ioutil"
 	"log"
 	"os"
-	"strings"
 	"sync"
 
 	"go-core-lessons/lesson-16/pkg/crawler"
@@ -124,21 +122,6 @@ func (gs *gosearch) dump(documents []crawler.Document) error {
 }
 
 func (gs *gosearch) run() {
-	reader := bufio.NewReader(os.Stdin)
-	for {
-		fmt.Print("Введите слово для поиска или exit для выхода: ")
-		text, err := reader.ReadString('\n')
-		if err != nil {
-			log.Println(err)
-			continue
-		}
-		text = strings.Replace(text, "\n", "", -1)
-		if text == "exit" {
-			break
-		}
-		results := gs.engine.Search(text)
-		for _, v := range results {
-			fmt.Printf("%s - %s\n", v.URL, v.Title)
-		}
-	}
+	srv := api.New(gs.engine)
+	log.Fatal(srv.Start(":8000"))
 }

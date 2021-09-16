@@ -42,3 +42,8 @@ func (db *DB) Docs(ids []int) []crawler.Document {
 	}
 	return result
 }
+
+// Clear очищает хранилище.
+func (db *DB) Clear() {
+	db.docs = []crawler.Document{}
+}
